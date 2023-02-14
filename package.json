@@ -5,11 +5,16 @@
     "node": "19.4.0",
     "npm": "9.2.0"
   },
+  "devDependencies": {
+    "eslint": "^8.33.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5"
+  },
   "description": "Moss Limpert http api assignment IGME 430",
   "main": "src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "npm test"
+    "test": "echo \"no tests\""
   },
   "repository": {
     "type": "git",
