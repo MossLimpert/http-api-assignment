@@ -11,8 +11,6 @@
         const contentType = response.headers.get('Content-Type');
         const content = document.querySelector('#content'); // getElementby id is faster
         content.appendChild(document.createElement('hr'));
-        const h1 = document.createElement('h1');
-        const p = document.createElement('p');
         const h2 = document.createElement('h2');
         const raw = document.createElement('p');
 
@@ -21,20 +19,13 @@
 
         if (contentType === 'application/json') {
           const parsedResponse = JSON.parse(resText);
-          h1.textContent = `Name: ${parsedResponse.name}`;
-          p.textContent = `Age: ${parsedResponse.age}`;
 
         } else if (contentType === 'text/xml') {
           // parse xml into a searchable document
           // fetch works better with JSON
           // xmlhttprequest works better with xml
           const parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml'); 
-          h1.textContent = `Name: ${parsedResponse.querySelector('name').textContent}`;
-          p.textContent = `Age: ${parsedResponse.querySelector('age').textContent}`;
         }
-
-        content.appendChild(h1);
-        content.appendChild(p);
         content.appendChild(h2);
         content.appendChild(raw);
       }); 
@@ -56,12 +47,11 @@
 
     // grab relevant buttons and add events
     const init = () => {
-      //const jsonButton = document.querySelector("#getCatsJSON");
-      //const xmlButton = document.querySelector("#getCatsXML");
-      //const sendJSON = () => {sendFetchRequest('/cats', 'application/json')};
+      const sendButton = document.querySelector("#send");
 
-      //jsonButton.addEventListener('click', sendJSON);
-      //xmlButton.addEventListener('click', () => sendFetchRequest('/cats', 'text/xml'));
+      const sendButtonAction = () => {sendFetchRequest(`${document.querySelector("#page").value}`, `${document.querySelector("#type").value}`)}
+      
+      sendButton.addEventListener('click', sendButtonAction);
     };
 
     window.onload = init;

@@ -11,36 +11,28 @@ const jsonHandler = require('./jsonResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-// load client page as home page
-// load css into client page as text/css
-// load urls with fetch when hitting send button
-// /success with 200 status code
-// /badRequest with 400 status if missing ?valid=true
-// /badRequest with 200 status code if ?valid=true
-// /unauthorized with 401 if missing ?loggedIn=yes
-// /unauthorized with 200 if ?loggedIn=yes
-// /forbidden with 403 status code
-// /internal with 500 status code
-// /notImplemented with 501 status code
-// any other page with 404 
-
 const urlStruct = {
-  '/': htmlHandler.getIndex,
-  '/style.css': htmlHandler.getCSS,
-  index: htmlHandler.getIndex,
+  'GET': {
+    '/': htmlHandler.getIndex,
+    '/style.css': htmlHandler.getCSS,
+    '/success': jsonHandler.success,
+    '/badRequest': jsonHandler.badRequest,
+    '/unauthorized': jsonHandler.unauthorized,
+    '/forbidden': jsonHandler.forbidden,
+    '/internal': jsonHandler.internal,
+    '/notImplemented': jsonHandler.notImplemented,
+    index: htmlHandler.getIndex,
+  },
+  'HEAD': {
+    '/success': jsonHandler.successMeta,
+    '/badRequest': jsonHandler.badRequestMeta,
+    '/unauthorized': jsonHandler.unauthorizedMeta,
+    '/forbidden': jsonHandler.forbiddenMeta,
+    '/internal': jsonHandler.internalMeta,
+    '/notImplemented': jsonHandler.notImplementedMeta,
+  },
+  notFound: jsonHandler.notFound
 }
-
-// server checks accept header for correct media type
-// in fetch requests, client should send accept header for correct media type
-// client should parse xml or json and put them on page
-// responses should default to JSON
-// json successes should have message tag
-// json failures should have message and id set to status code name
-// xml successes should have a <message> tag
-// xml failures should have a message tag and id tag set to status code name
-// print JSON or XML to console before parsing
-
-
 
 // parse body (NEEDS UPDATE FOR XML)
 const parseBody = (request, response, handlerFunction) => {
@@ -75,35 +67,22 @@ const parseBody = (request, response, handlerFunction) => {
     });
 }
 
-// handle post requests
-const handlePost = (request, response, parsedUrl) => {
-    if (parsedUrl.pathname === '/addUser') {
-      // body could come in several pieces
-      // parse body
-      parseBody(request, response, jsonHandler.addUser);
-    }
-};
-
-// handle get requests
-const handleGet = (request, response, parsedUrl) => {
-    if (parsedUrl.pathname === '/style.css') {
-      htmlHandler.getCSS(request, response);
-    } else if (parsedUrl.pathname === '/getUsers') {
-      jsonHandler.getUsers(request, response);
-    } else {
-      htmlHandler.getIndex(request, response);
-    }
-};
-
 // on request made to the server
 const onRequest = (request, response) => {
     const parsedUrl = url.parse(request.url);
     const acceptedTypes = request.headers.accept.split(',');
-    
-    if (request.method === 'POST') {
-      handlePost(request, response, parsedUrl);
+    const params = query.parse(parsedUrl.query);
+
+    // if request using method we dont handle
+    if (!urlStruct[request.method]) {
+      urlStruct['HEAD'].notFound(request, response);
+    }
+
+    const methodHandlers = urlStruct[request.method];
+    if (methodHandlers[parsedUrl.pathname]) {
+      methodHandlers[parsedUrl.pathname](request, response, acceptedTypes[0], params)
     } else {
-      handleGet(request, response, parsedUrl);
+      urlStruct.notFound(request, response, params);
     }
 };
 
