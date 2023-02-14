@@ -1,9 +1,14 @@
 {
   "name": "http-api-assignment",
   "version": "1.0.0",
+  "engines": {
+    "node": "19.4.0",
+    "npm": "9.2.0"
+  },
   "description": "Moss Limpert http api assignment IGME 430",
   "main": "src/server.js",
   "scripts": {
+    "start": "node ./src/server.js",
     "test": "npm test"
   },
   "repository": {
