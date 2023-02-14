@@ -1,0 +1,19 @@
+{
+  "name": "http-api-assignment",
+  "version": "1.0.0",
+  "description": "Moss Limpert http api assignment IGME 430",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MossLimpert/http-api-assignment.git"
+  },
+  "author": "Moss Limpert",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/MossLimpert/http-api-assignment/issues"
+  },
+  "homepage": "https://github.com/MossLimpert/http-api-assignment#readme"
+}
